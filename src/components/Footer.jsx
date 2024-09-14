@@ -20,7 +20,7 @@ function Footer() {
             </Link>
           </div>
           <div className="sm:w-6 w-[3.5vw]">
-            <Link to="https://github.com/" target="_blank">
+            <Link to="https://github.com/chandradiproy" target="_blank">
               <img src="/public/logo/facebook-app-symbol.png" />
             </Link>
           </div>
