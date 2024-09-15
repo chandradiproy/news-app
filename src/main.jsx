@@ -22,16 +22,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <Layout />,
     children: [
-      {path:"", element:<Body/>},
-      { path: 'business', element: <Business /> },
-      { path: 'entertainment', element: <Entertainment /> },
-      { path: 'general', element: <General /> },
-      { path: 'health', element: <Health /> },
-      { path: 'nation', element: <Nation /> },
-      { path: 'science', element: <Science /> },
-      { path: 'sports', element: <Sports /> },
-      { path: 'technology', element: <Technology /> },
-      { path: 'world', element: <World /> },
+      {path:"/", element:<Body/>},
     ]
   }
 ]);

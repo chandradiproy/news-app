@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { ArticleContext } from "../ArticleContext/ArticleContext"; // Adjust path as necessary
+import { Link, NavLink } from "react-router-dom";
 
 function Header() {
   const { updateFilters } = useContext(ArticleContext);
@@ -7,7 +8,7 @@ function Header() {
   const [language, setLanguage] = useState("en");
   const [country, setCountry] = useState("in");
   const [isMobileInputVisible, setIsMobileInputVisible] = useState(false);
-  const [isMobileInputVisibleOption, setIsMobileInputVisibleOption] = useState(true);
+  const [isMobileInputVisibleOption, setIsMobileInputVisibleOption] = useState(window.innerWidth >= 768);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Ref for detecting clicks inside the menu
@@ -20,13 +21,13 @@ function Header() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsMobileInputVisible(false);
-      }
-      if (window.innerWidth<768) {
-        setIsMobileInputVisibleOption(false);
-      }
+      // Hide both input and options when resizing
+      setIsMobileInputVisible(false);
+      setIsMobileInputVisibleOption(window.innerWidth >= 768); // Show options only if width >= 768px
     };
+
+    // Set initial state on component mount
+    handleResize();
 
     window.addEventListener("resize", handleResize);
 
@@ -34,22 +35,6 @@ function Header() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  // Close mobile input/options if clicked outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsMobileInputVisible(false);
-        setIsMobileInputVisibleOption(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [menuRef]);
 
   const handleFilterClick = () => {
     updateFilters({ category, language, country, searchTerm });
@@ -69,7 +54,7 @@ function Header() {
     <div className="w-full flex flex-col items-center h-fit shadow-md pb-3">
       <div className="w-[90%] md:h-[5rem] h-fit p-1 flex mt-4 items-center justify-between">
         <div className="logo-div sm:w-[10rem] w-[20vw] h-full flex items-center">
-          <img src="/public/logo/aconews-high-resolution-logo-transparent.png" alt="Logo" />
+          <NavLink to="/"><img src="/public/logo/aconews-high-resolution-logo-transparent.png" alt="Logo" /></NavLink>
         </div>
 
         <div className="search-div md:block hidden">
@@ -89,7 +74,7 @@ function Header() {
 
       {/* Mobile Input */}
       <div
-        ref={menuRef} // Attach the ref to detect clicks inside
+        ref={menuRef}
         className={`mobile-view-input w-[90%] transition-max-height duration-500 ease-in-out overflow-hidden ${
           isMobileInputVisible ? "max-h-[300px]" : "max-h-0"
         }`}
@@ -105,7 +90,7 @@ function Header() {
 
       {/* Mobile Options */}
       <div
-        ref={menuRef} // Attach the same ref for the mobile options
+        ref={menuRef}
         className={`options-div mt-3 flex sm:gap-3 sm:justify-center justify-evenly w-full transition-max-height duration-500 ease-in-out overflow-hidden ${
           isMobileInputVisibleOption ? "max-h-[500px]" : "max-h-0"
         }`}
