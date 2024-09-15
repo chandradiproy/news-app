@@ -6,7 +6,6 @@ This project is a news website built using React that allows users to view news 
 - [Project Setup](#project-setup)
 - [Overview](#overview)
 - [Challenges and Solutions](#challenges-and-solutions)
-- [Future Improvements](#future-improvements)
 
 ---
 
@@ -78,3 +77,5 @@ Ensure you have the following installed on your machine:
 
 - **Challenge:** Adapting the search bar and menu options to smaller screens required careful planning of the layout and handling of mobile-specific events.
 - **Solution:** Tailwind CSS's responsive utility classes were leveraged to show and hide elements based on the screen width, ensuring a smooth user experience on both mobile and desktop.
+
+### Website link : https://acnonews.web.app/
