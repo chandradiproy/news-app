@@ -20,11 +20,20 @@ import Body from './components/Body.jsx';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <Layout />, // This will be the layout with Header and Footer
     children: [
-      {path:"/", element:<Body/>},
-    ]
-  }
+      { path: '/', element: <Body /> }, // This will render the Body component at the root path
+      { path: '/business', element: <Business /> },
+      { path: '/entertainment', element: <Entertainment /> },
+      { path: '/general', element: <General /> },
+      { path: '/health', element: <Health /> },
+      { path: '/nation', element: <Nation /> },
+      { path: '/science', element: <Science /> },
+      { path: '/sports', element: <Sports /> },
+      { path: '/technology', element: <Technology /> },
+      { path: '/world', element: <World /> },
+    ],
+  },
 ]);
 
 createRoot(document.getElementById('root')).render(

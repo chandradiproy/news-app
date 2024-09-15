@@ -1,37 +1,37 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { ArticleContext } from "../ArticleContext/ArticleContext"; // Adjust path as necessary
+import { ArticleContext } from "../ArticleContext/ArticleContext";
 import { NavLink } from "react-router-dom";
+import logo from '../assets/logo/aconews-high-resolution-logo-transparent.png';
+import menu from '../assets/logo/menu.png';
 
 function Header() {
   const { updateFilters } = useContext(ArticleContext);
   const [category, setCategory] = useState("general");
   const [language, setLanguage] = useState("en");
   const [country, setCountry] = useState("in");
-  const [isMobileInputVisible, setIsMobileInputVisible] = useState(false);
-  const [isMobileInputVisibleOption, setIsMobileInputVisibleOption] = useState(window.innerWidth >= 768);
   const [searchTerm, setSearchTerm] = useState("");
-  const [initialWidth, setInitialWidth] = useState(window.innerWidth); // Store the initial window width
+  const [isMobileInputVisible, setIsMobileInputVisible] = useState(false);
+  const [isMobileOptionsVisible, setIsMobileOptionsVisible] = useState(false); // Changed from `isMobileInputVisibleOption`
+  const [initialWidth, setInitialWidth] = useState(window.innerWidth);
 
-  // Ref for detecting clicks inside the menu and input field
   const menuRef = useRef(null);
 
-  const showMenu = () => {
-    setIsMobileInputVisible((prev) => !prev);
-    setIsMobileInputVisibleOption((prev) => !prev);
-  };
+  const handleMenuToggle = () => {
+    setIsMobileInputVisible(prev => !prev);
+    setIsMobileOptionsVisible(prev => !prev);
 
+    
+  };
   useEffect(() => {
     const handleResize = () => {
-      // Only update the mobile visibility if the width changes
       if (window.innerWidth !== initialWidth) {
         setIsMobileInputVisible(false);
-        setIsMobileInputVisibleOption(window.innerWidth >= 768);
-        setInitialWidth(window.innerWidth); // Update initialWidth when width changes
+        setIsMobileOptionsVisible(window.innerWidth >= 768);
+        setInitialWidth(window.innerWidth);
       }
     };
 
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -39,10 +39,9 @@ function Header() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // If click happens outside the menuRef, hide input and options
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMobileInputVisible(false);
-        setIsMobileInputVisibleOption(window.innerWidth >= 768);
+        setIsMobileOptionsVisible(window.innerWidth >= 768);
       }
     };
 
@@ -63,15 +62,31 @@ function Header() {
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleFilterClick();
+      setIsMobileInputVisible(prev => !prev);
+      setIsMobileOptionsVisible(prev => !prev);
+      e.target.blur();
     }
   };
 
+  const handleLogoClick = () => {
+    setCategory("general");
+    setLanguage("en");
+    setCountry("in");
+    setSearchTerm("");
+    updateFilters({
+      category: "general",
+      language: "en",
+      country: "in",
+      searchTerm: "",
+    });
+  };
+
   return (
-    <div className="w-full flex flex-col items-center h-fit shadow-md pb-3">
+    <div className="w-full flex fixed top-0 z-10 bg-[#ffffff] flex-col items-center h-fit shadow-md pb-3">
       <div className="w-[90%] md:h-[5rem] h-fit p-1 flex mt-4 items-center justify-between">
         <div className="logo-div sm:w-[10rem] w-[20vw] h-full flex items-center">
-          <NavLink to="/">
-            <img src="/public/logo/aconews-high-resolution-logo-transparent.png" alt="Logo" />
+          <NavLink to="/" onClick={handleLogoClick}>
+            <img src={logo} alt="Logo" />
           </NavLink>
         </div>
 
@@ -86,7 +101,7 @@ function Header() {
         </div>
 
         <div className="menu-div md:hidden w-[5vw]">
-          <img src="/public/logo/menu.png" onClick={showMenu} alt="Menu" />
+          <img src={menu} onClick={handleMenuToggle} alt="Menu" />
         </div>
       </div>
 
@@ -101,7 +116,7 @@ function Header() {
           <input
             type="text"
             placeholder="Search..."
-            className="w-[90vw] sm:text-[2.5vw] text-[2.9vw] border-2 h-9 p-3 rounded-md"
+            className="w-[90vw] sm:text-[2.5vw] text-[2.9vw] border-2 h-9 p-3 rounded-md "
             onKeyPress={handleKeyPress}
             onChange={handleSearchInputChange}
             enterKeyHint="go"
@@ -110,14 +125,14 @@ function Header() {
 
         {/* Mobile Options */}
         <div
-          className={`options-div mt-3 flex sm:gap-x-3  sm:justify-center justify-evenly w-full transition-max-height duration-500 ease-in-out overflow-hidden ${
-            isMobileInputVisibleOption ? "max-h-[500px]" : "max-h-0"
+          className={`options-div mt-3 mb-2 flex sm:gap-x-3 sm:justify-center justify-evenly w-full  transition-max-height duration-500 ease-in-out overflow-hidden  ${
+            isMobileOptionsVisible ? "max-h-[500px]" : "max-h-0"
           }`}
         >
           <select
             id="category"
             name="category"
-            className="w-[8rem] cursor-pointer h-fit p-2 rounded-md text-[3vw] sm:text-xl shadow-lg bg-[#f6f5f5ef]"
+            className="sm:w-[7rem] mb-2 w-[21vw] cursor-pointer h-fit p-2 rounded-md text-[3vw] sm:text-xl shadow-lg bg-[#f6f5f5ef]"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
@@ -135,7 +150,7 @@ function Header() {
           <select
             id="lang"
             name="lang"
-            className="sm:w-[7rem] cursor-pointer w-[20vw] h-fit p-2 rounded-md text-[3vw] sm:text-xl shadow-lg bg-[#f6f5f5ef]"
+            className="sm:w-[7rem] cursor-pointer w-[25vw] h-fit p-2 rounded-md text-[3vw] sm:text-xl shadow-lg bg-[#f6f5f5ef]"
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
           >
@@ -152,7 +167,7 @@ function Header() {
           <select
             id="country"
             name="country"
-            className="sm:w-[7rem] cursor-pointer w-[20vw] h-fit p-2 rounded-md text-[3vw] sm:text-xl shadow-lg bg-[#f6f5f5ef]"
+            className="sm:w-[7rem] cursor-pointer mb-2 w-[20vw] h-fit p-2 rounded-md text-[3vw] sm:text-xl shadow-lg bg-[#f6f5f5ef]"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
           >
@@ -164,13 +179,14 @@ function Header() {
             <option value="gb">United Kingdom</option>
             <option value="us">United States</option>
           </select>
-
+            <div className="h-[2.3rem] rounded-lg">
           <button
-            className="sm:w-[4rem] w-[12vw] bg-[#336A86] sm:text-xl text-[3vw] text-white rounded-lg shadow-lg"
+            className="sm:w-[7rem] cursor-pointer mb-2 w-[20vw] h-fit p-2 rounded-md text-[3vw] sm:text-xl shadow-lg bg-[#336A86] text-white hover:bg-[#427995]"
             onClick={handleFilterClick}
           >
             Filter
           </button>
+          </div>
         </div>
       </div>
     </div>

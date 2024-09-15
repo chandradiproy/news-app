@@ -17,7 +17,7 @@ export function ArticleProvider({ children }) {
   useEffect(() => {
     const fetchArticles = async () => {
       const { category, language, country,searchTerm } = filters;
-      const API_KEY = "f3384be5b36c72c790b4d81d59d26de7";
+      const API_KEY = "";
       let apiUrl='';
       if(searchTerm!==''){
         apiUrl = `https://gnews.io/api/v4/search?q=${searchTerm}&apikey=${API_KEY}`;
